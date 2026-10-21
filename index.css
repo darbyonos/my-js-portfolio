@@ -1377,6 +1377,46 @@
       font-size: 12px;
       color: var(--text-secondary);
     }
+    /* Loading spinner */
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Form status messages */
+.form-status-notice {
+  display: none;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.form-status-notice.success {
+  display: block;
+  color: #4ade80;
+}
+
+.form-status-notice.error {
+  display: block;
+  color: #f87171;
+}
+
+/* Disabled button while sending */
+#submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
 
     /* Responsive Media Queries */
     @media (max-width: 1024px) {
