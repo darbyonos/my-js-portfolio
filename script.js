@@ -42,16 +42,28 @@
     });
 
     // Handle Contact Form Submission
-    const contactForm = document.getElementById("contactForm");
+  // Handle Contact Form Submission
+const contactForm = document.getElementById("contactForm");
+const submitButton = document.getElementById("submitBtn");
+const formStatus = document.getElementById("formStatusNotice");
 
 contactForm.addEventListener("submit", async function (event) {
   event.preventDefault();
 
-  const submitButton = contactForm.querySelector(
-    'button[type="submit"]'
-  );
+  // Save the original button content
+  const originalButtonContent = submitButton.innerHTML;
 
+  // Show loading state
   submitButton.disabled = true;
+  submitButton.innerHTML = `
+    <span class="loading-spinner" aria-hidden="true"></span>
+    <span>Sending...</span>
+  `;
+
+  // Update status message
+  formStatus.className = "form-status-notice";
+  formStatus.textContent = "Sending your message...";
+  formStatus.style.display = "block";
 
   try {
     const response = await fetch(contactForm.action, {
@@ -63,13 +75,34 @@ contactForm.addEventListener("submit", async function (event) {
     });
 
     if (response.ok) {
+      // Clear the form after successful submission
       contactForm.reset();
-      alert("Your message has been sent successfully!");
+
+      formStatus.className = "form-status-notice success";
+      formStatus.textContent = "✓ Message sent successfully! Thank you for reaching out.";
+
+      submitButton.innerHTML = `
+        <span>Message Sent!</span>
+        <span class="material-symbols-outlined" style="font-size:18px;">check_circle</span>
+      `;
+
+      // Restore the original button after 2 seconds
+      setTimeout(() => {
+        submitButton.innerHTML = originalButtonContent;
+      }, 2000);
+
     } else {
-      alert("Message could not be sent. Please try again.");
+      throw new Error("Submission failed");
     }
+
   } catch (error) {
-    alert("Something went wrong. Please check your internet connection.");
+    formStatus.className = "form-status-notice error";
+    formStatus.textContent =
+      "✕ Message could not be sent. Please check your connection and try again.";
+
+    // Keep the user's message so they don't have to type it again
+    submitButton.innerHTML = originalButtonContent;
+
   } finally {
     submitButton.disabled = false;
   }
